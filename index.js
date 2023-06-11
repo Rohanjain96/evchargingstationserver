@@ -4,10 +4,10 @@ const dotenv = require("dotenv")
 dotenv.config(".env")
 const connection = require("./db/db.js");
 const userrouter = require("./Routes/userroutes")
-const bookingRouter = require('./Routes/bookin')
+const bookingRouter = require('./Routes/booking.js')
 
 const app = express();
-const corsoptions = { credentials: true};
+const corsoptions = { credentials: true };
 const PORT = process.env.PORT || 5000
 app.use(cors(corsoptions));
 app.use(express.json());

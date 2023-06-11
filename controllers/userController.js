@@ -1,4 +1,4 @@
-const User = require("../models/userModel");
+const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generateauthtoken } = require("../config/generateAuthtoken.js");
@@ -69,7 +69,6 @@ const register = async (req, res) => {
   } catch (error) {
     res.status(403).send(error.message)
   }
-
 }
 
 const updateDetails = async (req, res) => {
@@ -105,6 +104,5 @@ const checkcookie = async (req, res) => {
 
   else res.status(401).end();
 }
-
 
 module.exports = { login, register, checkcookie, updateDetails }

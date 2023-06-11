@@ -1,25 +1,31 @@
-const express = require('express');
-const { generateauthtoken } = require("../config/generateAuthtoken.js");
 const Booking = require('../models/booking.js')
 
 const bookSlot = async (req, res) => {
     try {
-        console.log('body: ', req.body);
-        let { stationId, userId, timeSlot, date } = req.body;
-        date = new Date(date);
-        console.log('date: ', date);
-        if(!stationId || !userId || !timeSlot || !date) {
+        let { stationId, timeSlot, date,paymentMode, stationAddress, stationName } = req.body;
+        const userId = String(req.user._id)
+
+        body = {
+            stationId,
+            timeSlot: timeSlot,
+            date,
+            userId,
+            paymentMode,
+            stationAddress, 
+            stationName
+        }
+
+        if(!stationId || !timeSlot || !date || !paymentMode || !stationAddress ||!stationName) {
             return res.status(403).json({
                 result: false,
                 msg: "Incomplete information is given"
             });
         } 
-        const booking = await Booking.create(req.body);
-        console.log('booking: ', booking);
+        const booking = await Booking.create(body);
         return res.status(200).json({
             result: true,
             msg: "Slot Booked successfully",
-            slot: booking
+            details: booking
         });
         
     } catch (error) {
@@ -38,12 +44,29 @@ const fetchAllSlots = async (req, res) => {
             });
         }
 
-        const allstots = await Booking.find({stationId: stationId, date: date})
+        const bookings = await Booking.find({stationId: stationId, date: date})
 
         return res.status(200).json({
             result: true,
-            msg: "All Slots fetched successfully",
-            slots: allstots
+            msg: "All Bookings fetched successfully",
+            bookings: bookings
+        });
+
+    } catch (error) {
+        console.log('Error: ', error);
+        return res.status(500).json({msg: 'Error in booking timeslot'});
+    }
+}
+
+const fetchAllUserBooking = async (req, res) => {
+    try {
+
+        const bookings = await Booking.find({userId:req.user._id})
+
+        return res.status(200).json({
+            result: true,
+            msg: "All Bookings fetched successfully",
+            bookings: bookings
         });
 
     } catch (error) {
@@ -56,5 +79,6 @@ const fetchAllSlots = async (req, res) => {
 
 module.exports = {
     bookSlot,
-    fetchAllSlots
+    fetchAllSlots,
+    fetchAllUserBooking
 }

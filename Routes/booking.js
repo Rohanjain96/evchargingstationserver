@@ -3,13 +3,15 @@ const router = express.Router();
 const { protect } = require('../Middleware/Autheticate');
 const {
     bookSlot,
-    fetchAllSlots
+    fetchAllSlots,
+    fetchAllUserBooking
 } = require('../controllers/booking');
 
 // router.post('/bookSlot', protect, bookSlot);
-router.post('/bookSlot', bookSlot);
+router.post('/bookSlot',protect, bookSlot);
 
 router.post('/fetchAllSlots', protect, fetchAllSlots);
 
+router.post('/fetchAllUserBooking', protect, fetchAllUserBooking);
 
 module.exports = router;

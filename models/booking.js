@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
+    stationAddress:{
+        type:"String",
+        required:true
+    },
+    stationName:{
+        type:"String",
+        required:true
+    },
     stationId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -11,8 +19,12 @@ const bookingSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
-    timeSlot: {
-        type: String,
+    timeSlot: [{
+        starting_time: {type:String},
+        ending_time: {type:String}
+    }],
+    paymentMode: {
+        type:"String",
         required: true
     },
     date: Date
