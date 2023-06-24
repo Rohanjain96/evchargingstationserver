@@ -2,27 +2,27 @@ const Booking = require('../models/booking.js')
 
 const bookSlot = async (req, res) => {
     try {
-        let { stationId, timeSlot, date,paymentMode, stationAddress, stationName } = req.body;
+        let { stationId, timeSlots, date, stationAddress, stationName } = req.body;
         const userId = String(req.user._id)
-
-        body = {
-            stationId,
-            timeSlot: timeSlot,
-            date,
-            userId,
-            paymentMode,
-            stationAddress, 
-            stationName
-        }
-
-        if(!stationId || !timeSlot || !date || !paymentMode || !stationAddress ||!stationName) {
+        
+        if(!stationId || !timeSlots || !date || !stationAddress ||!stationName) {
             return res.status(403).json({
                 result: false,
                 msg: "Incomplete information is given"
             });
         } 
+
+        let body = {
+            stationId,
+            timeSlot: timeSlots,
+            date,
+            userId,
+            stationAddress, 
+            stationName
+        }
+
         const booking = await Booking.create(body);
-        return res.status(200).json({
+        return res.status(201).json({
             result: true,
             msg: "Slot Booked successfully",
             details: booking
@@ -34,17 +34,23 @@ const bookSlot = async (req, res) => {
     }
 }
 
-const fetchAllSlots = async (req, res) => {
+const fetchAllSlotsBookings = async (req, res) => {
     try {
-        const {stationId, date} = req.body;
-        if(!stationId || !date){
+        const {stationId} = req.body;
+
+        if(!stationId){
             return res.status(403).json({
-                result: true,
+                result: false,
                 msg: "Error: invalid station id"
             });
         }
 
-        const bookings = await Booking.find({stationId: stationId, date: date})
+        let bookings = []
+        for(let i =0; i< 3;i++){
+            const curr = new Date(new Date().getTime() + i * 86400000)
+            const date= curr.getDate() + " " + curr.toLocaleString('default', { month: 'long', year: "numeric" })
+            bookings.push(...await Booking.find({stationId: stationId, date: date}))
+        }
 
         return res.status(200).json({
             result: true,
@@ -54,14 +60,14 @@ const fetchAllSlots = async (req, res) => {
 
     } catch (error) {
         console.log('Error: ', error);
-        return res.status(500).json({msg: 'Error in booking timeslot'});
+        return res.status(500).json({msg: 'Error in fetching all slots'});
     }
 }
 
 const fetchAllUserBooking = async (req, res) => {
     try {
 
-        const bookings = await Booking.find({userId:req.user._id})
+        const bookings = await Booking.find({userId:req.user._id}).sort({createdAt:-1})
 
         return res.status(200).json({
             result: true,
@@ -71,14 +77,12 @@ const fetchAllUserBooking = async (req, res) => {
 
     } catch (error) {
         console.log('Error: ', error);
-        return res.status(500).json({msg: 'Error in booking timeslot'});
+        return res.status(500).json({msg: 'Error in fetching all bookings'});
     }
 }
 
-
-
 module.exports = {
     bookSlot,
-    fetchAllSlots,
+    fetchAllSlotsBookings,
     fetchAllUserBooking
 }

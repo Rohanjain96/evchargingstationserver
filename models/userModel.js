@@ -25,16 +25,13 @@ const userSchema = new Schema(
             maxlength: 10,
             unique: true
         },
+        pincode:{
+            type: Number
+        },
         pic: {
             type: String,
             default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
         },
-        dateofbirth: {
-            type: String,
-        },
-        designation: {
-            type: String,
-        }
     }, {
     timestamps: true
 }

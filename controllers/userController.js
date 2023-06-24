@@ -2,6 +2,7 @@ const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generateauthtoken } = require("../config/generateAuthtoken.js");
+
 const login = async (req, res) => {
   try {
     const { phone, password } = req.body;
@@ -72,8 +73,9 @@ const register = async (req, res) => {
 }
 
 const updateDetails = async (req, res) => {
-  const { name, email, dateofbirth, designation } = req.body;
-  let form = { name, email, dateofbirth, designation }
+  const { name, email, pincode } = req.body;
+  let form = { name, email, pincode }
+  
   Object.keys(form).forEach(key => form[key] === undefined && delete form[key])
   const updatedData = await User.findByIdAndUpdate(
     req.user._id, form,

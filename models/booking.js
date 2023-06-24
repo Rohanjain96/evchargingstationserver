@@ -10,9 +10,9 @@ const bookingSchema = new mongoose.Schema({
         required:true
     },
     stationId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: "String",
         required: true,
-        ref: 'Station'
+        // ref: 'Station'
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,11 +23,7 @@ const bookingSchema = new mongoose.Schema({
         starting_time: {type:String},
         ending_time: {type:String}
     }],
-    paymentMode: {
-        type:"String",
-        required: true
-    },
-    date: Date
+    date: String
 }, {timestamps: true});
 
 const Booking = mongoose.model('Booking', bookingSchema);
